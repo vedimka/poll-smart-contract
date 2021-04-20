@@ -1,14 +1,9 @@
 [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_voter",
+				"name": "voter",
 				"type": "address"
 			},
 			{
@@ -43,12 +38,66 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "voter",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "_pollID",
+				"type": "uint256"
 			}
 		],
-		"name": "getPoolsIDByVoter",
+		"name": "endPoll",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "enum Vote.choices",
+				"name": "choice",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "toVote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "creatorPollsIDs",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMeCreatedPolsIDs",
 		"outputs": [
 			{
 				"internalType": "uint256[]",
@@ -60,13 +109,69 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "hello",
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "getPollInfoByID",
 		"outputs": [
 			{
-				"internalType": "string",
+				"components": [
+					{
+						"internalType": "string[2]",
+						"name": "info",
+						"type": "string[2]"
+					},
+					{
+						"internalType": "enum PollFactory.Status",
+						"name": "status",
+						"type": "uint8"
+					}
+				],
+				"internalType": "struct PollFactory.Info",
 				"name": "",
-				"type": "string"
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "getPollResults",
+		"outputs": [
+			{
+				"internalType": "uint256[3]",
+				"name": "",
+				"type": "uint256[3]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "voter",
+				"type": "address"
+			}
+		],
+		"name": "getVoterPolsIDByAdress",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
 			}
 		],
 		"stateMutability": "view",
@@ -85,31 +190,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "pollsID",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "voterPolls",
+		"name": "voterPollsIDs",
 		"outputs": [
 			{
 				"internalType": "uint256",

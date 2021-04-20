@@ -1,24 +1,33 @@
 import abi from './VoteABI.json'
 
 const contractFunc = async (eth, payload) => {
-    const contract = new eth.Contract(abi, "0x2113Bb01797f2470a79C642F90F3cfD7bcF31F45")
+    const contract = new eth.Contract(abi, "0x34a316992aD3099F701341d0d9593505F6c38051")
+    let address = await eth.getAccounts()
+    await window.web3.currentProvider.enable();
+    let res = null
     switch(payload.type) {
-        case 'getPollsIDByVoter':
-            let address = await eth.getAccounts()
-            console.log( await contract.methods.getPoolsIDByVoter(address[0]).call())
+        case 'getMeCreatedPollsIDs':
+            res = await contract.methods.getMeCreatedPolsIDs()
+            console.log(await res.call())
             break
-        case 'addVoterToPoll':
+        case 'getVoterPollsIDByAdress':
+            res = await contract.methods.getVoterPolsIDByAdress(address[0])
+            console.log(await res.call())
+            break
+        case 'getPollInfoByID': 
+            res = await contract.methods.getPollInfoByID(payload.id)
+            console.log(await res.call())
+            break
+        case 'getPollResults':
+            res = await contract.methods.getPollResults(payload.id)
+            console.log(await res.call())
             break
         case 'createPoll':
-            break
-        case 'voterPolls':
+            res = await contract.methods.createPoll(payload.title, payload.description)
+            console.log(await res.call())
             break
         
     }
-    // const sendReq = async web => {
-    //     const contract = new eth.Contract(abi, "0x2113Bb01797f2470a79C642F90F3cfD7bcF31F45")
-    //     console.log( await contract.methods.hello().call())
-    // }
 }
 
 export default contractFunc

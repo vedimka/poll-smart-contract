@@ -1,17 +1,17 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import Web3 from 'web3'
-import { Context, StateContext, DispatchContext } from './storage/Context'
-import {getPollsIDByVoter} from '../connector'
+import { StateContext, DispatchContext } from './storage/Context'
+import contractFunc from '../connector'
 
 const Test = () => {
-    const [web3, setWeb] = useState() 
+    // const [web3, setWeb] = useState() 
     const reducer = useContext(DispatchContext)
     const state = useContext(StateContext)
     const ethLogin = async () => {
         const provider = await window.web3.currentProvider.enable()
-        const newWeb = new Web3(provider)
-        setWeb(newWeb)
+        const newWeb = new Web3(Web3.givenProvider)
+        // setWeb(newWeb)
         try{
             reducer({
                 type: 'SET_WEB',
@@ -24,8 +24,8 @@ const Test = () => {
     }
       
       const send = () => {
-        console.log(state.web)
-        // getPollsIDByVoter(web3)
+        // contractFunc(state.web, {type: 'createPoll', title: '', description: ''})
+        contractFunc(state.web, {type: 'getPollResults', id: 0})
       }
 
     return (
