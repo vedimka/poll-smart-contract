@@ -1,17 +1,19 @@
-import React, { useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
 import Web3 from 'web3'
 import { StateContext, DispatchContext } from './storage/Context'
 import contractFunc from '../connector'
+import { CollectionsOutlined } from '@material-ui/icons'
 
 const Test = () => {
-    // const [web3, setWeb] = useState() 
     const reducer = useContext(DispatchContext)
     const state = useContext(StateContext)
+    const [data, setData] = useState({})
+    const [res, setRes] = useState()
     const ethLogin = async () => {
         const provider = await window.web3.currentProvider.enable()
         const newWeb = new Web3(Web3.givenProvider)
-        // setWeb(newWeb)
         try{
             reducer({
                 type: 'SET_WEB',
@@ -22,29 +24,84 @@ const Test = () => {
         }
         
     }
+
+    const change = (e, type, isInt) => {
+        let obj = data
+        obj[type] = isInt ? +e.target.value : e.target.value 
+        setData(data)
+    }
       
-      const send = () => {
-        // contractFunc(state.web, {type: 'createPoll', title: '', description: ''})
-        contractFunc(state.web, {type: 'getPollResults', id: 0})
-      }
+    const send = (type) => {
+        setRes(contractFunc(state.web, {type, ...data}))
+    }
 
     return (
         <>
+            <TextField id="voteId" onChange={(e) => change(e, 'id', true)} label="Vote id" />
+            <TextField id="Address" onChange={(e) => change(e, 'address')} label="Address" />
+            <TextField id="title" onChange={(e) => change(e, 'title')} label="Title" />
+            <TextField id="descr" onChange={(e) => change(e, 'description')} label="Description" />
+            <TextField id="vote" onChange={(e) => change(e, 'vote', true)} label="Vote" />
+            <div ></div>
             <Button 
                 onClick={ethLogin}
                 variant='outlined'
                 color='primary'
-                margin='normal'
                 >
                 Login
             </Button>
             <Button 
-                onClick={send}
+                onClick={() => send('addVoterToPoll')}
                 variant='outlined'
-                color='secondary'
                 >
-                Send
+                addVoterToPoll
             </Button>
+            <Button 
+                onClick={() => send('createPoll')}
+                variant='outlined'
+                >
+                createPoll
+            </Button>
+            <Button 
+                onClick={() => send('getMeCreatedPollsIDs')}
+                variant='outlined'
+                >
+                getMeCreatedPollsIDs
+            </Button>
+            <Button 
+                onClick={() => send('getPollInfoByID')}
+                variant='outlined'
+                >
+                getPollInfoByID
+            </Button>
+            <Button 
+                onClick={() => send('getVoterPollsIDByAdress')}
+                variant='outlined'
+                >
+                getVoterPollsIDByAdress
+            </Button>
+            <Button 
+                onClick={() => send('endPoll')}
+                variant='outlined'
+                >
+                endPoll
+            </Button>
+            <Button 
+                onClick={() => send('toVote')}
+                variant='outlined'
+                >
+                toVote
+            </Button>
+            <div></div>
+            <TextField
+                id="standard-read-only-input"
+                label="Result"
+                defaultValue={res}
+                fullWidth
+                InputProps={{
+                    readOnly: true,
+                }}
+                />
         </>
     )
 }

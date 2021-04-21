@@ -1,5 +1,10 @@
 [
 	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -31,45 +36,15 @@
 			}
 		],
 		"name": "createPoll",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
+		"outputs": [
 			{
-				"internalType": "uint256",
-				"name": "_pollID",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
-		"name": "endPoll",
-		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "enum Vote.choices",
-				"name": "choice",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_pollID",
-				"type": "uint256"
-			}
-		],
-		"name": "toVote",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -93,6 +68,19 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "endPoll",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -175,6 +163,24 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "enum Vote.choices",
+				"name": "choice",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "toVote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
