@@ -19,6 +19,7 @@ import {StateContext} from '../storage/Context'
 import useClasses from './classes'
 
 const PollsList = ({typeOfList}) => {
+    //ownerPoll, partPoll
     const classes = useClasses()
     const votes = [
         {
@@ -62,23 +63,27 @@ const PollsList = ({typeOfList}) => {
         }
     ]
     const state = useContext(StateContext)
-    const [polls, setPolls] = useState(votes)
+    const [polls, setPolls] = useState(state[typeOfList] || [])
     const [invite, setInvite] = useState(false)
     const [vote, setVote] = useState(false)
     const [create, setCreate] = useState(false)
     const [id, setId] = useState(-1)
     const [copied, setCopy] = useState(false)
+    const [address, setAddress] = useState('')
     const answers = ['agree', 'disagree', 'nd']
-    const address = '0x8E5e0376922B04574D29F868E0a43761c5716056'
+    
+    useEffect( async () => {
+        const addr = await state.web.getAccounts()
+        setAddress(addr[0])
+    }, [])
 
     const copy = () => {
         setCopy(true)
         navigator.clipboard.writeText(address)
-        console.log(copied)
         setTimeout( () => setCopy(false), 1500)
     }
-    // List of polls in which you are a voter
-    // The number of polls in which you are a voter
+
+
     return (
         <Container className={classes.root}>
 			<Grid container spacing={3}>
@@ -86,7 +91,7 @@ const PollsList = ({typeOfList}) => {
                     <Paper
                         elevation={0}
                         className='paper header'>
-                            List of polls created by you
+                            { typeOfList === 'ownerPoll' ? "List of polls created by you" : 'List of polls in which you are a voter'}
                             <div className="description">
                                 <Typography>Your etherium address: {address}
                                     <Tooltip 
@@ -113,59 +118,88 @@ const PollsList = ({typeOfList}) => {
                                         </svg>
                                     </Tooltip>
                                 </Typography>
-                                <Typography>The number of polls you created: {polls.length}</Typography>
+                                <Typography>{ typeOfList === 'ownerPoll' ? "The number of polls you created" : 'The number of polls in which you are a voter'}: {polls.length}</Typography>
                             </div>
                     </Paper>
                 </Grid>
-                {polls.map(item => (
-                    <Grid item xs={12} key={item.id}>
-                        <Paper 
-                            elevation={0}
-                            className='paper'
-                            >
-                            <div className="caption">
-                                <Typography className="title">{item.title}</Typography>
-                                <Typography className="description">{item.description}</Typography>
-                            </div>
-                            {item.state === 0 ?
-                            <div className='btn-group'>
-                                <Button 
-                                    color='primary'
-                                    onClick={() => {setVote(true); setId(+item.id)}}>
-                                    Vote
-                                </Button>
-                                <Button 
-                                    color='primary'
-                                    onClick={() => {setInvite(true); setId(+item.id)}}>
-                                    Invite
-                                </Button>
-                                <Button color='primary'>
-                                    End poll
-                                </Button>
-                            </div>:
-                            <div className='results'>
-                                {answers.map(ans => (
-                                    <>
-                                        <Typography>{ans !== 'nd' ? ans.charAt(0).toUpperCase() + ans.slice(1) : 'Not decided'}</Typography>
-                                        <Box display="flex" alignItems="center">
-                                            <Box width="90%" mr={2}>
-                                            <LinearProgress variant="determinate" value={item.result[ans][1]} />
+                { polls.length ? 
+                    polls.map(item => (
+                        <Grid item xs={12} key={item.id}>
+                            <Paper 
+                                elevation={0}
+                                className='paper'
+                                >
+                                <div className="caption">
+                                    <Typography className="title">{item.title}</Typography>
+                                    <Typography className="description">{item.description}</Typography>
+                                </div>
+                                {item.state === 0 ?
+                                <div className='btn-group'>
+                                    <Button 
+                                        color='primary'
+                                        onClick={() => {setVote(true); setId(+item.id)}}>
+                                        Vote
+                                    </Button>
+                                    {typeOfList === 'ownerPoll' ?
+                                        <>
+                                            <Button 
+                                                color='primary'
+                                                onClick={() => {setInvite(true); setId(+item.id)}}>
+                                                Invite
+                                            </Button>
+                                            <Button color='primary'>
+                                                End poll
+                                            </Button>
+                                        </>
+                                        : 
+                                        <></>
+                                    }
+                                </div>:
+                                <div className='results'>
+                                    {answers.map(ans => (
+                                        <>
+                                            <Typography>{ans !== 'nd' ? ans.charAt(0).toUpperCase() + ans.slice(1) : 'Not decided'}</Typography>
+                                            <Box display="flex" alignItems="center">
+                                                <Box width="90%" mr={2}>
+                                                <LinearProgress variant="determinate" value={item.result[ans][1]} />
+                                                </Box>
+                                                <Box minWidth={35}>
+                                                <Typography variant="body2" color="textSecondary">{item.result[ans][1]}% ({item.result[ans][0]})</Typography>
+                                                </Box>
                                             </Box>
-                                            <Box minWidth={35}>
-                                            <Typography variant="body2" color="textSecondary">{item.result[ans][1]}% ({item.result[ans][0]})</Typography>
-                                            </Box>
-                                        </Box>
-                                    </>
-                                ))}
-                            </div>
-                            }
-                        </Paper>
-                    </Grid>
-                ))}
+                                        </>
+                                    ))}
+                                </div>
+                                }
+                            </Paper>
+                        </Grid>
+                    )) : 
+                    <Grid item xs={12} key='noPaper'>
+                    <Paper
+                        elevation={0}
+                        className='paper'>
+                        {typeOfList === 'ownerPoll' ? <div className="caption">
+                            <Typography className="title">You haven't made any polls yet</Typography>
+                            <Typography className="description">You can create a poll by clicking on the Create button, enter the name and description of the new vote and it will be created</Typography>
+                        </div>:
+                        <div className="caption">
+                            <Typography className="title">You haven't been invited to poll yet</Typography>
+                            <Typography className="description">You can copy your address and give it to your friend to invite you to poll</Typography>
+                        </div>}
+                    </Paper>
+                </Grid>}
             </Grid>
-            <InviteForm id={1} open={invite} close={() => setInvite(false)}/>
+            { typeOfList === 'ownerPoll' ?
+                <Button 
+                    className={classes.createButton}
+                    onClick={() => setCreate(true)}>
+                    Create poll
+                </Button>:
+                <></>
+            }
+            <InviteForm id={id} open={invite} close={() => setInvite(false)}/>
             <CreateForm open={create} close={() => setCreate(false)}/>
-            <VoteForm id={1} open={vote} close={() => setVote(false)}/>
+            <VoteForm id={id} open={vote} close={() => setVote(false)}/>
         </Container>
     )
 }

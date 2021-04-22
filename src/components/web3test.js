@@ -62,28 +62,28 @@ const Test = () => {
                 createPoll
             </Button>
             <Button 
-                onClick={() => send('getMeCreatedPollsIDs')}
+                onClick={() => send('getCreatedPolls')}
                 variant='outlined'
                 >
-                getMeCreatedPollsIDs
+                getCreatedPolls
             </Button>
             <Button 
-                onClick={() => send('getPollInfoByID')}
+                onClick={() => send('getVoterPolls')}
                 variant='outlined'
                 >
-                getPollInfoByID
-            </Button>
-            <Button 
-                onClick={() => send('getVoterPollsIDByAdress')}
-                variant='outlined'
-                >
-                getVoterPollsIDByAdress
+                getVoterPolls
             </Button>
             <Button 
                 onClick={() => send('endPoll')}
                 variant='outlined'
                 >
                 endPoll
+            </Button>
+            <Button 
+                onClick={() => send('getPollInfoByID')}
+                variant='outlined'
+                >
+                getPollInfoByID
             </Button>
             <Button 
                 onClick={() => send('toVote')}

@@ -1,14 +1,97 @@
 [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256[3]",
+				"name": "value",
+				"type": "uint256[3]"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "EndVote",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "NewVoter",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "voteID",
+				"type": "uint256"
+			}
+		],
+		"name": "StartVote",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "Voted",
+		"type": "event"
 	},
 	{
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "voter",
+				"name": "_voter",
 				"type": "address"
 			},
 			{
@@ -38,36 +121,12 @@
 		"name": "createPoll",
 		"outputs": [
 			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "ID",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "creatorPollsIDs",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -85,12 +144,29 @@
 	},
 	{
 		"inputs": [],
-		"name": "getMeCreatedPolsIDs",
+		"name": "getCreatedPolls",
 		"outputs": [
 			{
-				"internalType": "uint256[]",
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "voteID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string[2]",
+						"name": "info",
+						"type": "string[2]"
+					},
+					{
+						"internalType": "enum PollFactory.Status",
+						"name": "status",
+						"type": "uint8"
+					}
+				],
+				"internalType": "struct PollFactory.Info[]",
 				"name": "",
-				"type": "uint256[]"
+				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
@@ -108,6 +184,11 @@
 		"outputs": [
 			{
 				"components": [
+					{
+						"internalType": "uint256",
+						"name": "voteID",
+						"type": "uint256"
+					},
 					{
 						"internalType": "string[2]",
 						"name": "info",
@@ -147,19 +228,30 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "voter",
-				"type": "address"
-			}
-		],
-		"name": "getVoterPolsIDByAdress",
+		"inputs": [],
+		"name": "getVoterPolls",
 		"outputs": [
 			{
-				"internalType": "uint256[]",
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "voteID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string[2]",
+						"name": "info",
+						"type": "string[2]"
+					},
+					{
+						"internalType": "enum PollFactory.Status",
+						"name": "status",
+						"type": "uint8"
+					}
+				],
+				"internalType": "struct PollFactory.Info[]",
 				"name": "",
-				"type": "uint256[]"
+				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
@@ -169,7 +261,7 @@
 		"inputs": [
 			{
 				"internalType": "enum Vote.choices",
-				"name": "choice",
+				"name": "_choice",
 				"type": "uint8"
 			},
 			{
@@ -181,30 +273,6 @@
 		"name": "toVote",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "voterPollsIDs",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	}
 ]

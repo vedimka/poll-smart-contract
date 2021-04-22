@@ -6,7 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-
 import useClasses from './classes'
 
 const CreateForm = ({open, close}) => {
@@ -16,6 +15,7 @@ const CreateForm = ({open, close}) => {
 
     const create = () => {
         
+        close()
     } 
 
     return (

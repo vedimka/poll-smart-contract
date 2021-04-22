@@ -16,7 +16,7 @@ const useClasses = makeStyles(theme => ({
             wordWrap: 'break-word',
             WebkitTransition: 'background-color 200ms cubic-bezier(0.0,0.0,0.2,1)',
             '& .title': {
-                fontSize: 28,
+                fontSize: 25,
                 justifyContent: 'space-between',
                 marginBottom: 6,
                 // Webkit-box-pack: justify;
@@ -48,7 +48,25 @@ const useClasses = makeStyles(theme => ({
                 }
             }
         }
+    },
+    createButton: {
+        position: 'fixed',
+        padding: '10px 15px',
+        right: 25,
+        bottom: 40,
+        backgroundColor: '#dc004e',
+        color: '#fff',
+        borderRadius: 20,
+        minHeight: 45,
+        minWidth: 120,
+        fontSize: 16,
+        '&:hover': {
+            transition: 'margin-left 2s ease',
+            backgroundColor: '#dc004ecc',
+        },
+
     }
+
 }))
 
 export default useClasses
