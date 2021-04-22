@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 
 import useClasses from './classes'
 
-const InviteForm = ({id, close}) => {
+const InviteForm = ({id, open, close}) => {
     const classes = useClasses()
     const [address, setAddress] = useState(null) 
     const [error, setError] = useState('clear')
@@ -26,7 +26,7 @@ const InviteForm = ({id, close}) => {
     return (
         <Dialog 
             className={classes.root}
-            open={true} 
+            open={open} 
             onClose={close} 
             aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Invite friend</DialogTitle>
@@ -41,8 +41,8 @@ const InviteForm = ({id, close}) => {
                     label="Etherium Address"
                     type="text"
                     onChange={e => {setAddress(e.target.value); setError('clear')}}
-                    error={error != 'clear'}
-                    helperText={error != 'clear' ? error : ''}
+                    error={error !== 'clear'}
+                    helperText={error !== 'clear' ? error : ''}
                     fullWidth
                 />
             </DialogContent>

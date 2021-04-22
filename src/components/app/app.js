@@ -1,8 +1,8 @@
 import React from 'react'
 
 import Header from '../header/header'
-import Test from '../web3test'//component used for test contract functions
-import PollsList from '../votesList/pollsList'
+// import Test from '../web3test'//component used for test contract functions
+import PollsList from '../pollsList/pollsList'
 import useClasses from './classes'
 
 const App = () => {

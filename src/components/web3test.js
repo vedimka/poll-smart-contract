@@ -4,7 +4,6 @@ import TextField from '@material-ui/core/TextField'
 import Web3 from 'web3'
 import { StateContext, DispatchContext } from './storage/Context'
 import contractFunc from '../connector'
-import { CollectionsOutlined } from '@material-ui/icons'
 
 const Test = () => {
     const reducer = useContext(DispatchContext)
@@ -12,7 +11,7 @@ const Test = () => {
     const [data, setData] = useState({})
     const [res, setRes] = useState()
     const ethLogin = async () => {
-        const provider = await window.web3.currentProvider.enable()
+        await window.web3.currentProvider.enable()
         const newWeb = new Web3(Web3.givenProvider)
         try{
             reducer({

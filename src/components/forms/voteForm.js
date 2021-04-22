@@ -12,7 +12,7 @@ import Radio from '@material-ui/core/Radio'
 
 import useClasses from './classes'
 
-const VoteForm = ({close}) => {
+const VoteForm = ({id, open, close}) => {
     const classes = useClasses()
     const [choise, setChoise] = useState(-1)
     const vote = () => {
@@ -21,7 +21,7 @@ const VoteForm = ({close}) => {
     return (
         <Dialog 
             className={classes.root}
-            open={true} 
+            open={open} 
             onClose={close} 
             aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Vote</DialogTitle>

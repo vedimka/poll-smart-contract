@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 
 import useClasses from './classes'
 
-const CreateForm = ({close}) => {
+const CreateForm = ({open, close}) => {
     const classes = useClasses()
     const [title, setTitle] = useState(null)  
     const [descr, setDescr] = useState(null)
@@ -21,7 +21,7 @@ const CreateForm = ({close}) => {
     return (
         <Dialog 
             className={classes.root}
-            open={true} 
+            open={open} 
             onClose={close} 
             aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Create poll</DialogTitle>
