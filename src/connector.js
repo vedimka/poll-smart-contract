@@ -45,7 +45,6 @@ const contractFunc = async (eth, payload) => {
         throw error === 'execution reverted' ? "There was an error on the server, please try again later" : error.charAt(0).toUpperCase() + error.slice(1)
     }
     return res
-
 }
 
 export default contractFunc
