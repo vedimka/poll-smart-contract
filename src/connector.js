@@ -1,11 +1,11 @@
 import abi from './VoteABI.json'
+require('dotenv').config()
 
 const contractFunc = async (eth, payload) => {
-    const contract = new eth.Contract(abi, "0x230362a0FDce25c8Eb0cF4BF412b8e2C4B29F217")
+    const contract = new eth.Contract(abi, process.env.REACT_APP_ADDRESS) //"")
     let address = await eth.getAccounts()
     await window.web3.currentProvider.enable();
     let res = null
-    console.log(payload)
     try{
         switch(payload.type) {
             case 'addVoterToPoll':
@@ -17,7 +17,7 @@ const contractFunc = async (eth, payload) => {
                 break
             
             case 'getCreatedPolls':
-                res = await contract.methods.getCreatedPolls().call()
+                res = await contract.methods.getCreatedPolls(address[0]).call()
                 break
             
             case 'getPollInfoByID': 
@@ -29,11 +29,11 @@ const contractFunc = async (eth, payload) => {
                 break
 
             case 'getVoterPolls':
-                res = await contract.methods.getVoterPolls().call()
+                res = await contract.methods.getVoterPolls(address[0]).call()
                 break
 
             case 'endPoll': 
-                res = await contract.methods.endPoll(payload.id).send({from: address[0]})
+                res = await contract.methods.endPoll(payload.id, address[0]).send({from: address[0]})
                 break
 
             case 'toVote':
@@ -44,7 +44,6 @@ const contractFunc = async (eth, payload) => {
         const error = e.message
         throw error === 'execution reverted' ? "There was an error on the server, please try again later" : error.charAt(0).toUpperCase() + error.slice(1)
     }
-    console.log(res)
     return res
 
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
@@ -8,15 +8,42 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
 import useClasses from './classes'
+import {StateContext, DispatchContext} from '../storage/Context'
+import contractFunc from '../../connector'
 
 const InviteForm = ({id, open, close}) => {
     const classes = useClasses()
     const [address, setAddress] = useState(null) 
     const [error, setError] = useState('clear')
+    const state = useContext(StateContext)
+    const reducer = useContext(DispatchContext)
 
-    const invite = () => {
+    const invite = async () => {
         if(address.match(/^0x[a-fA-F0-9]{40}$/g)){
+            reducer( {
+                type: 'SET_LOADER',
+                payload: true
+            })
             setError('clear')
+            let snack = ['Friend invited', 'info']
+            try {
+                await contractFunc(state.web, {type: 'addVoterToPoll', address, id})
+            } catch (e) {
+                snack = [e.message, 'error']
+            }
+            close()
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: snack[0],
+                    type: snack[1]
+                }
+            })
+            reducer( {
+                type: 'SET_LOADER',
+                payload: false
+            })
         } else {
             setError('Incorrect etherium address')
             return

@@ -11,34 +11,37 @@ import useClasses from './classes'
 import {StateContext, DispatchContext} from '../storage/Context'
 import contractFunc from '../../connector'
 
-const CreateForm = ({open, close}) => {
+const EndingForm = ({id, open, close}) => {
     const classes = useClasses()
-    const [title, setTitle] = useState(null)  
-    const [descr, setDescr] = useState(null)
     const state = useContext(StateContext)
     const reducer = useContext(DispatchContext)
 
-    const create = async () => {
-        let created = state.ownerPoll
+    const end = async () => {
         reducer( {
             type: 'SET_LOADER',
             payload: true
         })
-        let snack = ['You have created a poll', 'info']
+        let poll = state.ownerPoll.find(item => {
+            if(item.id === id) return item
+        })
+        let snack = ['Poll is ended', 'info']
         try {
-            const res = await contractFunc(state.web, {type: 'createPoll', title, description: descr})
-            created.push({
-                id: res.events.NewVoter.returnValues.pollID,
-                title, 
-                description: descr,
-                status: 0,
-                result: {
-                    agree: [0, 0],
-                    disagree: [0, 0],
-                    nd: [0, 0]
+            const res = await contractFunc(state.web, {type: 'endPoll', id})
+            let results = res.EndVote.returnValues.value
+            const agree = +results[0],
+                        disagree = +results[1],
+                        nd = +results[2],
+                        sum = agree + disagree + nd
+
+            poll.result.agree = [agree, Math.round(agree / sum * 100)]
+            poll.result.dpollsagree = [disagree, Math.round(disagree / sum * 100)]
+            poll.result.nd = [nd, Math.round(nd / sum * 100)]
+            let created  = state.ownerPoll.map(item => {
+                if(item.id === id){
+                    item = poll
                 }
             })
-            reducer( {
+            reducer({
                 type: 'SET_OWNER',
                 payload: created
             })
@@ -67,36 +70,17 @@ const CreateForm = ({open, close}) => {
             open={open} 
             onClose={close} 
             aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Create poll</DialogTitle>
+            <DialogTitle id="form-dialog-title">Conform ending</DialogTitle>
             <DialogContent >
                 <DialogContentText>
-                    Enter a title and description for your new poll
+                    Confirm the action to end the poll. After confirmation, you will receive the voting results and no one will be able to vote in this poll
                 </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="title"
-                    label="Title"
-                    type="text"
-                    onChange={e => setTitle(e.target.value)}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    id="description"
-                    label="Description"
-                    type="text"
-                    onChange={e => setDescr(e.target.value)}
-                    multiline
-                    fullWidth
-                />
             </DialogContent>
             <DialogActions>
                 <Button 
-                    onClick={create} 
-                    color="primary"
-                    disabled={!title || !descr}>
-                    create
+                    onClick={end} 
+                    color="primary">
+                    confirm
                 </Button>
                 <Button onClick={close} color="primary">
                     close
@@ -106,4 +90,4 @@ const CreateForm = ({open, close}) => {
     )
 }
 
-export default CreateForm
+export default EndingForm

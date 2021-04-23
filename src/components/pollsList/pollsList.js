@@ -9,64 +9,24 @@ import Fade from '@material-ui/core/Fade';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
 
-
 import VoteForm from '../forms/voteForm'
 import CreateForm from '../forms/createForm'
 import InviteForm from '../forms/inviteForm'
+import EndingForm from '../forms/endForm'
 
-import {StateContext} from '../storage/Context'
+import {StateContext, DispatchContext } from '../storage/Context'
 
 import useClasses from './classes'
 
 const PollsList = ({typeOfList}) => {
-    //ownerPoll, partPoll
     const classes = useClasses()
-    const votes = [
-        {
-            title: 'Hello',
-            description: 'world',
-            id: 0,
-            state: 0 // 0 - inProgress, 1 - done
-        },
-        {
-            title: 'Second',
-            description: 'worldКогда вы загрузите файлы и отправите форму, мы сохраним ваше имя и фото профиля.',
-            id: 1,
-            state: 0 // 0 - inProgress, 1 - done
-        },
-        {
-            title: 'Title',
-            description: `We want to enable user to easily interact with our contracts. User has to be able to create pools, send ETH to the pool, transfer reward points, see who’s the Shark and other token holders.
-            We also want to detect account from MetaMask extension and present just user specific data.
-            Blockchain is slow compared to the user interactions and we don’t want user to sit and wait for the confirmations. That means it’s critical to implement transactions queue and enable user to see transaction status within Web Application or using tool like Etherscan.`,
-            id: 2,
-            state: 0 // 0 - inProgress, 1 - done
-        },
-        {
-            title: 'Another',
-            description: `We want to enable user to easily interact with our contracts. User has to be able to create pools, send ETH to the pool, transfer reward points, see who’s the Shark and other token holders.
-            We also want to detect account from MetaMask extension and present just user specific data.`,
-            id: 3,
-            state: 1, // 0 - inProgress, 1 - done
-            result: {
-                agree: [5, Math.round(5 / 12 * 100)],  //agree / all * 100
-                disagree: [4, Math.round(4 / 12 * 100)],
-                nd: [3, Math.round(3 / 12 * 100)]
-            }
-        },
-        {
-            title: 'Hey',
-            description: `We also want to detect account from MetaMask extension and present just user specific data.
-            Blockchain is slow compared to the user interactions and we don’t want user to sit and wait for the confirmations. That means it’s critical to implement transactions queue and enable user to see transaction status within Web Application or using tool like Etherscan.`,
-            id: 4,
-            state: 0 // 0 - inProgress, 1 - done
-        }
-    ]
     const state = useContext(StateContext)
-    const [polls, setPolls] = useState(state[typeOfList] || [])
+    const reducer = useContext(DispatchContext)
+    const [polls, setPolls] = useState(state[typeOfList])
     const [invite, setInvite] = useState(false)
     const [vote, setVote] = useState(false)
     const [create, setCreate] = useState(false)
+    const [end, setEnd] = useState(false)
     const [id, setId] = useState(-1)
     const [copied, setCopy] = useState(false)
     const [address, setAddress] = useState('')
@@ -77,10 +37,25 @@ const PollsList = ({typeOfList}) => {
         setAddress(addr[0])
     }, [])
 
+    useEffect( async () => {
+        setPolls(state[typeOfList])
+    }, [typeOfList])
+
     const copy = () => {
-        setCopy(true)
-        navigator.clipboard.writeText(address)
-        setTimeout( () => setCopy(false), 1500)
+        try {
+            navigator.clipboard.writeText(address)
+            setCopy(true)
+            setTimeout( () => setCopy(false), 1500)
+        } catch (e) {
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: 'Your browser does not support this feature',
+                    type: 'warning'
+                }
+            })
+        }
     }
 
 
@@ -133,7 +108,7 @@ const PollsList = ({typeOfList}) => {
                                     <Typography className="title">{item.title}</Typography>
                                     <Typography className="description">{item.description}</Typography>
                                 </div>
-                                {item.state === 0 ?
+                                {item.status === 0 ?
                                 <div className='btn-group'>
                                     <Button 
                                         color='primary'
@@ -147,7 +122,9 @@ const PollsList = ({typeOfList}) => {
                                                 onClick={() => {setInvite(true); setId(+item.id)}}>
                                                 Invite
                                             </Button>
-                                            <Button color='primary'>
+                                            <Button 
+                                                color='primary'
+                                                onClick={() => {setEnd(true); setId(+item.id)}}>
                                                 End poll
                                             </Button>
                                         </>
@@ -155,7 +132,7 @@ const PollsList = ({typeOfList}) => {
                                         <></>
                                     }
                                 </div>:
-                                <div className='results'>
+                                <div className='results' key='results'>
                                     {answers.map(ans => (
                                         <>
                                             <Typography>{ans !== 'nd' ? ans.charAt(0).toUpperCase() + ans.slice(1) : 'Not decided'}</Typography>
@@ -164,7 +141,7 @@ const PollsList = ({typeOfList}) => {
                                                 <LinearProgress variant="determinate" value={item.result[ans][1]} />
                                                 </Box>
                                                 <Box minWidth={35}>
-                                                <Typography variant="body2" color="textSecondary">{item.result[ans][1]}% ({item.result[ans][0]})</Typography>
+                                                <Typography variant="body2" color="textSecondary">{item.result[ans][0]} ({item.result[ans][1]}%)</Typography>
                                                 </Box>
                                             </Box>
                                         </>
@@ -175,31 +152,34 @@ const PollsList = ({typeOfList}) => {
                         </Grid>
                     )) : 
                     <Grid item xs={12} key='noPaper'>
-                    <Paper
-                        elevation={0}
-                        className='paper'>
-                        {typeOfList === 'ownerPoll' ? <div className="caption">
-                            <Typography className="title">You haven't made any polls yet</Typography>
-                            <Typography className="description">You can create a poll by clicking on the Create button, enter the name and description of the new vote and it will be created</Typography>
-                        </div>:
-                        <div className="caption">
-                            <Typography className="title">You haven't been invited to poll yet</Typography>
-                            <Typography className="description">You can copy your address and give it to your friend to invite you to poll</Typography>
-                        </div>}
-                    </Paper>
-                </Grid>}
+                        <Paper
+                            elevation={0}
+                            className='paper'>
+                            {typeOfList === 'ownerPoll' ? <div className="caption">
+                                <Typography className="title">You haven't made any polls yet</Typography>
+                                <Typography className="description">You can create a poll by clicking on the Create button, enter the name and description of the new vote and it will be created</Typography>
+                            </div>:
+                            <div className="caption">
+                                <Typography className="title">You haven't been invited to poll yet</Typography>
+                                <Typography className="description">You can copy your address and give it to your friend to invite you to poll</Typography>
+                            </div>}
+                        </Paper>
+                    </Grid>
+                }
             </Grid>
             { typeOfList === 'ownerPoll' ?
-                <Button 
+                <Button
+                    key='createButton'
                     className={classes.createButton}
                     onClick={() => setCreate(true)}>
                     Create poll
                 </Button>:
                 <></>
             }
-            <InviteForm id={id} open={invite} close={() => setInvite(false)}/>
-            <CreateForm open={create} close={() => setCreate(false)}/>
-            <VoteForm id={id} open={vote} close={() => setVote(false)}/>
+            <EndingForm key="endForm" id={id} open={end} close={() => setEnd(false)} />
+            <InviteForm key="inviteForm" id={id} open={invite} close={() => setInvite(false)}/>
+            <CreateForm key='createForm' open={create} close={() => setCreate(false)}/>
+            <VoteForm key='voteForm' id={id} open={vote} close={() => setVote(false)}/>
         </Container>
     )
 }

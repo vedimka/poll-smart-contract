@@ -4,8 +4,14 @@ import Reducer from './Reducer'
 
 const initState = {
     web: null,
+    loader: false,
     ownerPoll: [],
-    partPoll: []
+    partPoll: [],
+    snackbar: {
+        isOpen: false,
+        text: '',
+        type: 'success'
+    },
 }
 const Context = createContext(initState)
 const StateContext = createContext()

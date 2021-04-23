@@ -119,13 +119,7 @@
 			}
 		],
 		"name": "createPoll",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "ID",
-				"type": "uint256"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -135,6 +129,11 @@
 				"internalType": "uint256",
 				"name": "_pollID",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_owner",
+				"type": "address"
 			}
 		],
 		"name": "endPoll",
@@ -143,7 +142,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			}
+		],
 		"name": "getCreatedPolls",
 		"outputs": [
 			{
@@ -228,7 +233,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			}
+		],
 		"name": "getVoterPolls",
 		"outputs": [
 			{

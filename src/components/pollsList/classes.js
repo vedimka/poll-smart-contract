@@ -4,7 +4,7 @@ const useClasses = makeStyles(theme => ({
     root: {
         margin: 'auto',
         maxWidth: '90vw',
-        width: 860,
+        width: 760,
         paddingBottom: 50,
         '& .paper': {
             backgroundColor: '#fff',
@@ -52,9 +52,9 @@ const useClasses = makeStyles(theme => ({
     createButton: {
         position: 'fixed',
         padding: '10px 15px',
-        right: 25,
+        right: 40,
         bottom: 40,
-        backgroundColor: '#dc004e',
+        backgroundColor: '#ff2975bb',//'#dc004eaa',
         color: '#fff',
         borderRadius: 20,
         minHeight: 45,
@@ -62,7 +62,7 @@ const useClasses = makeStyles(theme => ({
         fontSize: 16,
         '&:hover': {
             transition: 'margin-left 2s ease',
-            backgroundColor: '#dc004ecc',
+            backgroundColor: '#ff295fdd',
         },
 
     }

@@ -10,6 +10,44 @@ import {DispatchContext} from '../storage/Context'
 import useClasses from './classes'
 import contractFunc from '../../connector'
 
+const getPolls = async (web, type) => {
+    let polls = []
+    const res = await contractFunc(web.eth, {type})
+    res.map(async (item) => {
+        let i = {
+            title: item[1][0],
+            description: item[1][1],
+            id: +item[0],
+            status: +item[2],
+            result: {
+                agree: [0, 0],
+                disagree: [0,0],
+                nd: [0,0]
+            }
+        }
+        if(i.status === 1){
+            try{
+                let results = await contractFunc(web.eth, {type:'getPollResults', id: +item[0]})
+                const agree = +results[0],
+                        disagree = +results[1],
+                        nd = +results[2],
+                        sum = agree + disagree + nd
+
+                i.result.agree = [agree, Math.round(agree / sum * 100)]
+                i.result.disagree = [disagree, Math.round(disagree / sum * 100)]
+                i.result.nd = [nd, Math.round(nd / sum * 100)]
+            } catch(e) {
+                i.result = {
+                    agree: [0, 0],
+                    disagree: [0,0],
+                    nd: [0,0]
+                }
+            }
+        }
+        polls.push(i)
+    })
+    return polls
+}
 
 const Login = () => {
     const classes = useClasses()
@@ -19,8 +57,12 @@ const Login = () => {
         await window.web3.currentProvider.enable()
         const newWeb = new Web3(Web3.givenProvider)
         let created, invited
+        reducer( {
+            type: 'SET_LOADER',
+            payload: true
+        })
         try {
-            created = await contractFunc(newWeb.eth, {type:'getCreatedPolls'})
+            created = await getPolls(newWeb, 'getCreatedPolls')
         } catch {
             created = []
         } finally {
@@ -30,7 +72,8 @@ const Login = () => {
             })
         }
         try{
-            invited = await contractFunc(newWeb.eth, {type:'getVoterPolls'})
+            invited = await getPolls(newWeb, 'getVoterPolls')
+
         } catch {
             invited = []
         } finally {
@@ -39,15 +82,33 @@ const Login = () => {
                 payload: invited
             })
         }
-        console.log(created, invited)
         try{
             reducer({
                 type: 'SET_WEB',
                 payload: newWeb.eth
             })
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: 'Login success',
+                    type: 'success'
+                }
+            })
         } catch(e) {
-            console.log(e)
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: e.message,
+                    type: 'error'
+                }
+            })
         }
+        reducer( {
+            type: 'SET_LOADER',
+            payload: false
+        })
     }
 
     return (

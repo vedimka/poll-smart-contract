@@ -11,13 +11,14 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 
-import {StateContext} from '../storage/Context'
+import {StateContext, DispatchContext} from '../storage/Context'
 import useClasses from './classes'
 
 const Header = ({page, setPage}) => {
     const [openMenu, setMenu] = useState(false)
     const classes = useClasses()
     const state = useContext(StateContext)
+    const reducer = useContext(DispatchContext)
    
     const toggleDrawer = (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -31,6 +32,14 @@ const Header = ({page, setPage}) => {
             setPage(name)
             setMenu(false)
         }
+    }
+
+    const logout = () => {
+        reducer({
+            type:'CLEAR'
+        })
+        console.log(state)
+        setMenu(false)
     }
 
     return (
@@ -72,14 +81,6 @@ const Header = ({page, setPage}) => {
                                 </ListItemIcon>
                                 <ListItemText primary="Polls created by me" />
                             </ListItem>
-                            <ListItem className={classes.menuItem} button key="Create a new poll">
-                                <ListItemIcon className='icon'>
-                                    <svg id="Layer_1" enableBackground="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="m237.102 366v-90.018h-90c-11.046 0-20-8.954-20-20s8.954-20 20-20h90v-90.982c0-11.046 8.954-20 20-20s20 8.954 20 20v90.982h90c11.046 0 20 8.954 20 20s-8.954 20-20 20h-90v90.018c0 11.046-8.954 20-20 20s-20-8.954-20-20zm254.898-15c11.046 0 20-8.954 20-20v-251c0-44.112-35.888-80-80-80h-352c-44.112 0-80 35.888-80 80v352c0 44.112 35.888 80 80 80h352c44.112 0 80-35.888 80-80 0-11.046-8.954-20-20-20s-20 8.954-20 20c0 22.056-17.944 40-40 40h-352c-22.056 0-40-17.944-40-40v-352c0-22.056 17.944-40 40-40h352c22.056 0 40 17.944 40 40v251c0 11.046 8.954 20 20 20z"/>
-                                    </svg>
-                                </ListItemIcon>
-                                <ListItemText primary="Create a new poll" />
-                            </ListItem>
                         </List>
                         <Divider />
                         <List>
@@ -118,6 +119,7 @@ const Header = ({page, setPage}) => {
                         <List className={classes.logout}>
                             <ListItem 
                                 className={classes.menuItem} 
+                                onClick={logout}
                                 button 
                                 key="logout">
                                 <ListItemIcon className='icon'>

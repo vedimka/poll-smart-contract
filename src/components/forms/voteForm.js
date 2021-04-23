@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -11,12 +11,41 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Radio from '@material-ui/core/Radio'
 
 import useClasses from './classes'
+import {StateContext, DispatchContext} from '../storage/Context'
+import contractFunc from '../../connector'
 
 const VoteForm = ({id, open, close}) => {
     const classes = useClasses()
     const [choise, setChoise] = useState(-1)
-    const vote = () => {
+    const state = useContext(StateContext)
+    const reducer = useContext(DispatchContext)
+
+    const vote = async () => {
+        reducer( {
+            type: 'SET_LOADER',
+            payload: true
+        })
+        let snack = ['Your vote has been counted', 'info']
+        try {
+            await contractFunc(state.web, {type: 'toVote', vote: +choise, id})
+        } catch (e) {
+            snack = [e.message, 'error']
+        }
+        close()
+        reducer({
+            type: 'SET_SNACKBAR',
+            payload: {
+                isOpen: true,
+                text: snack[0],
+                type: snack[1]
+            }
+        })
+        reducer( {
+            type: 'SET_LOADER',
+            payload: false
+        })
     } 
+
 
     return (
         <Dialog 

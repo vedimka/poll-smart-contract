@@ -30,8 +30,8 @@ const Test = () => {
         setData(data)
     }
       
-    const send = (type) => {
-        setRes(contractFunc(state.web, {type, ...data}))
+    const send =async (type) => {
+        console.log(await contractFunc(state.web, {type, ...data}))
     }
 
     return (
@@ -72,6 +72,12 @@ const Test = () => {
                 variant='outlined'
                 >
                 getVoterPolls
+            </Button>
+            <Button 
+                onClick={() => send('getPollResults')}
+                variant='outlined'
+                >
+                getPollResults
             </Button>
             <Button 
                 onClick={() => send('endPoll')}

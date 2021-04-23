@@ -5,6 +5,16 @@ const Reducer = (state, action) => {
                 ...state,
                 web: action.payload
             }
+        case 'SET_LOADER': 
+            return {
+                ...state,
+                loader: action.payload
+            }
+        case 'SET_SNACKBAR': 
+            return {
+                ...state,
+                snackbar: action.payload
+            }
         case "SET_OWNERPOLL":
             return {
                 ...state, 
@@ -18,8 +28,14 @@ const Reducer = (state, action) => {
         case "CLEAR":
             return {
                 web: null,
+                loader: false,
                 ownerPoll: [],
-                partPoll: []
+                partPoll: [],
+                snackbar: {
+                    isOpen: false,
+                    text: '',
+                    type: 'success'
+                },
             }
         default:
             return state
