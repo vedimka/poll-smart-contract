@@ -72,7 +72,14 @@ const Login = () => {
             })
         }
         try{
-            invited = await getPolls(newWeb, 'getVoterPolls')
+            const createdId = created.map(item => item.id),
+                polls = await getPolls(newWeb, 'getVoterPolls')
+            invited = polls.map(item => {
+                if(!createdId.includes(item.id))
+                    return item
+            })
+            invited = invited[0] ? invited : []
+
         } catch {
             invited = []
         } finally {

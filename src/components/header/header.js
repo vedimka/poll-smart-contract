@@ -38,7 +38,6 @@ const Header = ({page, setPage}) => {
         reducer({
             type:'CLEAR'
         })
-        console.log(state)
         setMenu(false)
     }
 

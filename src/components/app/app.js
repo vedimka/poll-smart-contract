@@ -16,7 +16,7 @@ const App = () => {
     const classes = useClasses()
     const state = useContext(StateContext)
     const reducer = useContext(DispatchContext)
-    const [page, setPage] = useState('partPoll') // partPoll ownerPoll
+    const [page, setPage] = useState('ownerPoll')
     const closeSnackbar = () => {
         reducer({
             type: 'SET_SNACKBAR',
