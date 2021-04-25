@@ -98,8 +98,8 @@ const PollsList = ({typeOfList}) => {
                     </Paper>
                 </Grid>
                 { polls.length ? 
-                    polls.map(item => (
-                        <Grid item xs={12} key={item.id}>
+                    polls.map((item , index)=> (
+                        <Grid item xs={12} key={index}>
                             <Paper 
                                 elevation={0}
                                 className='paper'

@@ -73,7 +73,6 @@ const Login = () => {
         }
         try{
             invited = await getPolls(newWeb, 'getVoterPolls')
-
         } catch {
             invited = []
         } finally {

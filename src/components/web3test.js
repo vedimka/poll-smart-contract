@@ -7,7 +7,6 @@ import contractFunc from '../connector'
 
 const Test = () => {
 
-    
     const reducer = useContext(DispatchContext)
     const state = useContext(StateContext)
     const [data, setData] = useState({})

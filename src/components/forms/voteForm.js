@@ -29,7 +29,8 @@ const VoteForm = ({id, open, close}) => {
         try {
             await contractFunc(state.web, {type: 'toVote', vote: +choise, id})
         } catch (e) {
-            snack = [e.message, 'error']
+            const error = e.message ? e.message : 'Invalid transaction'
+            snack = [error, 'error']
         }
         close()
         reducer({

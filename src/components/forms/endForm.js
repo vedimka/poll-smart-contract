@@ -47,7 +47,8 @@ const EndingForm = ({id, open, close}) => {
             })
 
         } catch (e) {
-            snack = [e.message, 'error']
+            const error = e.message ? e.message : 'Invalid transaction'
+            snack = [error, 'error']
         }
         close()
         reducer({
