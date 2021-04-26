@@ -1,6 +1,5 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -21,25 +20,28 @@ const EndingForm = ({id, open, close}) => {
             type: 'SET_LOADER',
             payload: true
         })
-        let poll = state.ownerPoll.find(item => {
-            if(item.id === id) return item
-        })
         let snack = ['Poll is ended', 'info']
         try {
             const res = await contractFunc(state.web, {type: 'endPoll', id})
-            let results = res.EndVote.returnValues.value
+            let results = res.events.EndVote.returnValues.value
             const agree = +results[0],
                         disagree = +results[1],
                         nd = +results[2],
                         sum = agree + disagree + nd
-
-            poll.result.agree = [agree, Math.round(agree / sum * 100)]
-            poll.result.dpollsagree = [disagree, Math.round(disagree / sum * 100)]
-            poll.result.nd = [nd, Math.round(nd / sum * 100)]
+            let result = {}
+            result.agree = [agree, Math.round(agree / sum * 100) || 0]
+            result.dpollsagree = [disagree, Math.round(disagree / sum * 100) || 0]
+            result.nd = [nd, Math.round(nd / sum * 100) || 0]
             let created  = state.ownerPoll.map(item => {
-                if(item.id === id){
-                    item = poll
+                if(+item.id === +id){
+                    item = {
+                        ...item,
+                        status: 1,
+                        result
+                    }
+                    console.log(item)
                 }
+                return item
             })
             reducer({
                 type: 'SET_OWNER',
@@ -47,7 +49,7 @@ const EndingForm = ({id, open, close}) => {
             })
 
         } catch (e) {
-            const error = e.message ? e.message : 'Invalid transaction'
+            const error = e.message ? e.message : 'The current vote has already ended'
             snack = [error, 'error']
         }
         close()

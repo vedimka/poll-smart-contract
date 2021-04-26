@@ -63,10 +63,10 @@ const Test = () => {
                 createPoll
             </Button>
             <Button 
-                onClick={() => send('getCreatedPolls')}
+                onClick={() => send('getUserPolls')}
                 variant='outlined'
                 >
-                getCreatedPolls
+                getUserPolls
             </Button>
             <Button 
                 onClick={() => send('getVoterPolls')}

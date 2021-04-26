@@ -29,7 +29,7 @@ const InviteForm = ({id, open, close}) => {
             try {
                 await contractFunc(state.web, {type: 'addVoterToPoll', address, id})
             } catch (e) {
-                const error = e.message ? e.message : 'Invalid transaction'
+                const error = e.message ? e.message : 'Invalid transaction'//Voter address already exist
                 snack = [error, 'error']
             }
             close()

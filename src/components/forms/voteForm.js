@@ -29,7 +29,7 @@ const VoteForm = ({id, open, close}) => {
         try {
             await contractFunc(state.web, {type: 'toVote', vote: +choise, id})
         } catch (e) {
-            const error = e.message ? e.message : 'Invalid transaction'
+            const error = e.message ? e.message : 'You have already voted'
             snack = [error, 'error']
         }
         close()

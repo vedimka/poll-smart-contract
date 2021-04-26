@@ -10,45 +10,6 @@ import {DispatchContext} from '../storage/Context'
 import useClasses from './classes'
 import contractFunc from '../../connector'
 
-const getPolls = async (web, type) => {
-    let polls = []
-    const res = await contractFunc(web.eth, {type})
-    res.map(async (item) => {
-        let i = {
-            title: item[1][0],
-            description: item[1][1],
-            id: +item[0],
-            status: +item[2],
-            result: {
-                agree: [0, 0],
-                disagree: [0,0],
-                nd: [0,0]
-            }
-        }
-        if(i.status === 1){
-            try{
-                let results = await contractFunc(web.eth, {type:'getPollResults', id: +item[0]})
-                const agree = +results[0],
-                        disagree = +results[1],
-                        nd = +results[2],
-                        sum = agree + disagree + nd
-
-                i.result.agree = [agree, Math.round(agree / sum * 100)]
-                i.result.disagree = [disagree, Math.round(disagree / sum * 100)]
-                i.result.nd = [nd, Math.round(nd / sum * 100)]
-            } catch(e) {
-                i.result = {
-                    agree: [0, 0],
-                    disagree: [0,0],
-                    nd: [0,0]
-                }
-            }
-        }
-        polls.push(i)
-    })
-    return polls
-}
-
 const Login = () => {
     const classes = useClasses()
     const reducer = useContext(DispatchContext)
@@ -56,61 +17,64 @@ const Login = () => {
     const login =  async () => {
         await window.web3.currentProvider.enable()
         const newWeb = new Web3(Web3.givenProvider)
-        let created, invited
+        let created = [], 
+            invited = []
         reducer( {
             type: 'SET_LOADER',
             payload: true
         })
         try {
-            created = await getPolls(newWeb, 'getCreatedPolls')
-        } catch {
-            created = []
-        } finally {
-            reducer({
-                type: 'SET_OWNERPOLL',
-                payload: created
+            const polls = await contractFunc(newWeb.eth, {type: 'getUserPolls'})
+            await polls.map(async item => {
+                let poll = {
+                    id: +item.voteID,
+                    title: item.info[0],
+                    description: item.info[1],
+                    status: +item.status
+                }
+                if(poll.status === 1){
+                    let results = await contractFunc(newWeb.eth, {type:'getPollResults', id: poll.id})
+                    const agree = +results[0],
+                            disagree = +results[1],
+                            nd = +results[2],
+                            sum = agree + disagree + nd
+                    poll.result = {}
+                    poll.result.agree = [agree, Math.round(agree / sum * 100) || 0]
+                    poll.result.disagree = [disagree, Math.round(disagree / sum * 100)|| 0]
+                    poll.result.nd = [nd, Math.round(nd / sum * 100)|| 0]
+                }
+                if(item.owner){
+                    created.push(poll)
+                } else {
+                    invited.push(poll)
+                }
             })
-        }
-        try{
-            const createdId = created.map(item => item.id),
-                polls = await getPolls(newWeb, 'getVoterPolls')
-            invited = polls.map(item => {
-                if(!createdId.includes(item.id))
-                    return item
-            })
-            invited = invited[0] ? invited : []
-
+            console.log(created, invited)
         } catch {
             invited = []
-        } finally {
-            reducer({
-                type: 'SET_PARTPOLL',
-                payload: invited
-            })
+            created = []
         }
-        try{
-            reducer({
-                type: 'SET_WEB',
-                payload: newWeb.eth
-            })
-            reducer({
-                type: 'SET_SNACKBAR',
-                payload: {
-                    isOpen: true,
-                    text: 'Login success',
-                    type: 'success'
-                }
-            })
-        } catch(e) {
-            reducer({
-                type: 'SET_SNACKBAR',
-                payload: {
-                    isOpen: true,
-                    text: e.message,
-                    type: 'error'
-                }
-            })
-        }
+        console.log(1111)
+        reducer({
+            type: 'SET_OWNERPOLL',
+            payload: created
+        })
+        reducer({
+            type: 'SET_PARTPOLL',
+            payload: invited
+        })
+        reducer({
+            type: 'SET_WEB',
+            payload: newWeb.eth
+        })
+        reducer({
+            type: 'SET_SNACKBAR',
+            payload: {
+                isOpen: true,
+                text: 'Login success',
+                type: 'success'
+            }
+        })
         reducer( {
             type: 'SET_LOADER',
             payload: false
