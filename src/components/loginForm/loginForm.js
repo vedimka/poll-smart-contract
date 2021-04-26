@@ -25,12 +25,13 @@ const Login = () => {
         })
         try {
             const polls = await contractFunc(newWeb.eth, {type: 'getUserPolls'})
-            await polls.map(async item => {
+            for(let item of polls) {
                 let poll = {
                     id: +item.voteID,
                     title: item.info[0],
                     description: item.info[1],
-                    status: +item.status
+                    status: +item.status,
+                    voted: item.voted
                 }
                 if(poll.status === 1){
                     let results = await contractFunc(newWeb.eth, {type:'getPollResults', id: poll.id})
@@ -48,8 +49,7 @@ const Login = () => {
                 } else {
                     invited.push(poll)
                 }
-            })
-            console.log(created, invited)
+            }
         } catch {
             invited = []
             created = []

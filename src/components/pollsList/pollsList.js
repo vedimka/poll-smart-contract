@@ -12,13 +12,14 @@ import CreateForm from '../forms/createForm'
 import InviteForm from '../forms/inviteForm'
 import EndingForm from '../forms/endForm'
 
-import {StateContext } from '../storage/Context'
+import {StateContext, DispatchContext } from '../storage/Context'
 
 import useClasses from './classes'
 
 const PollsList = ({typeOfList}) => {
     const classes = useClasses()
     const state = useContext(StateContext)
+    const reducer = useContext(DispatchContext)
     const [polls, setPolls] = useState(state[typeOfList])
     const [invite, setInvite] = useState(false)
     const [vote, setVote] = useState(false)
@@ -31,14 +32,28 @@ const PollsList = ({typeOfList}) => {
     useEffect( async () => {
         const addr = await state.web.getAccounts()
         setAddress(addr[0])
-    }, [state.web])
+    }, [])
 
     useEffect(() => {
-        function resetPolls() {
-            setPolls(state[typeOfList])
+        setPolls(state[typeOfList])
+        console.log(polls)
+    }, [typeOfList, state[typeOfList]])
+
+    const toVote = (voted, id) => {
+        if(!voted){
+            setVote(true)
+            setId(+id)
+        } else {
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: 'You have already voted to this poll',
+                    type: 'warning'
+                }
+            })
         }
-        resetPolls()
-    }, [typeOfList])
+    }
 
     return (
         <Container className={classes.root}>
@@ -69,7 +84,7 @@ const PollsList = ({typeOfList}) => {
                                 <div className='btn-group'>
                                     <Button 
                                         color='primary'
-                                        onClick={() => {setVote(true); setId(+item.id)}}>
+                                        onClick={() => toVote(item.voted, +item.id)}>
                                         Vote
                                     </Button>
                                     {typeOfList === 'ownerPoll' ?
@@ -136,7 +151,7 @@ const PollsList = ({typeOfList}) => {
             <EndingForm key="endForm" id={id} open={end} close={() => setEnd(false)} />
             <InviteForm key="inviteForm" id={id} open={invite} close={() => setInvite(false)}/>
             <CreateForm key='createForm' open={create} close={() => setCreate(false)}/>
-            <VoteForm key='voteForm' id={id} open={vote} close={() => setVote(false)}/>
+            <VoteForm key='voteForm' list={typeOfList} id={id} open={vote} close={() => setVote(false)}/>
         </Container>
     )
 }

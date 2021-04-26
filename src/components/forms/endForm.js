@@ -22,27 +22,21 @@ const EndingForm = ({id, open, close}) => {
         })
         let snack = ['Poll is ended', 'info']
         try {
-            const res = await contractFunc(state.web, {type: 'endPoll', id})
-            let results = res.events.EndVote.returnValues.value
+            // const res = await contractFunc(state.web, {type: 'endPoll', id})
+            let results = [0, 1, 0]//res.events.EndVote.returnValues.value
             const agree = +results[0],
                         disagree = +results[1],
                         nd = +results[2],
                         sum = agree + disagree + nd
             let result = {}
             result.agree = [agree, Math.round(agree / sum * 100) || 0]
-            result.dpollsagree = [disagree, Math.round(disagree / sum * 100) || 0]
+            result.disagree = [disagree, Math.round(disagree / sum * 100) || 0]
             result.nd = [nd, Math.round(nd / sum * 100) || 0]
-            let created  = state.ownerPoll.map(item => {
-                if(+item.id === +id){
-                    item = {
-                        ...item,
-                        status: 1,
-                        result
-                    }
-                    console.log(item)
-                }
-                return item
-            })
+            let created  = state.ownerPoll
+            const index = created.findIndex(x => x.id === id)
+            created[index].status = 1
+            created[index].result = result
+            console.log(created)
             reducer({
                 type: 'SET_OWNER',
                 payload: created

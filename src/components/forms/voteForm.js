@@ -14,7 +14,7 @@ import useClasses from './classes'
 import {StateContext, DispatchContext} from '../storage/Context'
 import contractFunc from '../../connector'
 
-const VoteForm = ({id, open, close}) => {
+const VoteForm = ({id, list, open, close}) => {
     const classes = useClasses()
     const [choise, setChoise] = useState(-1)
     const state = useContext(StateContext)
@@ -28,11 +28,19 @@ const VoteForm = ({id, open, close}) => {
         let snack = ['Your vote has been counted', 'info']
         try {
             await contractFunc(state.web, {type: 'toVote', vote: +choise, id})
+            let polls  = state[list]
+            const index = polls.findIndex(x => x.id === id)
+            polls[index].voted = true
+            reducer({
+                type: list === 'ownerPoll' ? 'SET_OWNER' : 'SET_PART',
+                payload: polls
+            })
         } catch (e) {
             const error = e.message ? e.message : 'You have already voted'
             snack = [error, 'error']
         }
         close()
+        console.log(state.ownerPoll)
         reducer({
             type: 'SET_SNACKBAR',
             payload: {

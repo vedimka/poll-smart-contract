@@ -190,6 +190,11 @@
 						"internalType": "enum PollFactory.Status",
 						"name": "status",
 						"type": "uint8"
+					},
+					{
+						"internalType": "bool",
+						"name": "voted",
+						"type": "bool"
 					}
 				],
 				"internalType": "struct PollFactory.Info",
@@ -250,6 +255,11 @@
 						"internalType": "enum PollFactory.Status",
 						"name": "status",
 						"type": "uint8"
+					},
+					{
+						"internalType": "bool",
+						"name": "voted",
+						"type": "bool"
 					}
 				],
 				"internalType": "struct PollFactory.Info[]",

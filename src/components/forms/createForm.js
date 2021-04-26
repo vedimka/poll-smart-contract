@@ -32,11 +32,7 @@ const CreateForm = ({open, close}) => {
                 title, 
                 description: descr,
                 status: 0,
-                result: {
-                    agree: [0, 0],
-                    disagree: [0, 0],
-                    nd: [0, 0]
-                }
+                voted: false
             })
             reducer( {
                 type: 'SET_OWNER',
