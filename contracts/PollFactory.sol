@@ -15,6 +15,7 @@ contract PollFactory {
         string [2] info;
         Status status;
         Vote vote;
+        bool voted;
         address[] voters;
     }
     struct Info {
@@ -22,6 +23,7 @@ contract PollFactory {
         bool owner;
         string [2] info;
         Status status;
+        bool voted;
     }
     mapping(uint => Poll) private pollsByID;
     mapping(address => uint[]) private userPollsID;
@@ -37,7 +39,8 @@ contract PollFactory {
             voteID: pollsByID[_pollID].voteID,
             owner: pollsByID[_pollID].owner == _user,
             info: pollsByID[_pollID].info,
-            status : pollsByID[_pollID].status
+            status : pollsByID[_pollID].status,
+            voted: pollsByID[_pollID].voted
             });
         }
     function createPoll(string memory _title, string memory _description) public {
@@ -48,6 +51,7 @@ contract PollFactory {
             info : [_title, _description],
             status : Status.IN_PROGRESS,
             vote : new Vote(msg.sender, _title, _description),
+            voted: false,
             voters: usersByPollID[pollID.current()]
         });
         addVoterToPoll( msg.sender, pollID.current());
@@ -74,22 +78,18 @@ contract PollFactory {
     function toVote (Vote.choices _choice , uint _pollID) public {
         require (pollsByID[_pollID].voteID == _pollID, "Voting is not created yet");
         require (pollsByID[_pollID].status == Status.IN_PROGRESS, "Voting has already ended");
+        require (pollsByID[_pollID].voted == false, "You have already voted");
         pollsByID[_pollID].vote.vote(msg.sender, _choice );
+        pollsByID[_pollID].voted = true;
         emit Voted(msg.sender, _pollID);
     }
     function getPollResults( uint _pollID) public view returns (uint[3] memory pollResult) {
         require (pollsByID[_pollID].voteID == _pollID, "Voting is not created yet");
-        require (pollsByID[_pollID].status == Status.DONE, "Voting is not over yet");    
+        require (pollsByID[_pollID].status == Status.DONE, "Voting is not over yet"); 
         pollResult = pollsByID[_pollID].vote.getResults();
     }
     function changeStatus( address _user, uint _pollID) private  { 
-        // IDToIndex[_voter][_pollID]
-        // mapping(address => mapping(uint => uint)) IDToIndex;
-        // IDToIndex[msg.sender][pollID.current()] = userPolls[msg.sender].length;
         userPolls [ _user ] [IDToIndex [_user] [_pollID] ].status = Status.DONE;
-        // for(uint i = 0; i < userPolls[_user].length ; i++){
-        //   userPolls [ _user ] [i].status = getPollInfoByID( userPollsID [_user] [i] ).status;
-        // }
     }
     function endPoll( uint _pollID) public {
         require (pollsByID[_pollID].voteID == _pollID, "Voting is not created yet");
