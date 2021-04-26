@@ -81,6 +81,7 @@ contract PollFactory {
         require (pollsByID[_pollID].voted == false, "You have already voted");
         pollsByID[_pollID].vote.vote(msg.sender, _choice );
         pollsByID[_pollID].voted = true;
+        userPolls [ msg.sender] [IDToIndex [msg.sender] [_pollID] ].voted = true;
         emit Voted(msg.sender, _pollID);
     }
     function getPollResults( uint _pollID) public view returns (uint[3] memory pollResult) {
