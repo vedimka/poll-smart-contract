@@ -54,7 +54,6 @@ const Login = () => {
             invited = []
             created = []
         }
-        console.log(1111)
         reducer({
             type: 'SET_OWNERPOLL',
             payload: created

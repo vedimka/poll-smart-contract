@@ -36,7 +36,6 @@ const EndingForm = ({id, open, close}) => {
             const index = created.findIndex(x => x.id === id)
             created[index].status = 1
             created[index].result = result
-            console.log(created)
             reducer({
                 type: 'SET_OWNER',
                 payload: created

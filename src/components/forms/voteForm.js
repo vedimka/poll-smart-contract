@@ -40,7 +40,6 @@ const VoteForm = ({id, list, open, close}) => {
             snack = [error, 'error']
         }
         close()
-        console.log(state.ownerPoll)
         reducer({
             type: 'SET_SNACKBAR',
             payload: {
