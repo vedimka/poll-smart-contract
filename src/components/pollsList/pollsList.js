@@ -36,7 +36,6 @@ const PollsList = ({typeOfList}) => {
 
     useEffect(() => {
         setPolls(state[typeOfList])
-        console.log(polls)
     }, [typeOfList, state[typeOfList]])
 
     const toVote = (voted, id) => {
