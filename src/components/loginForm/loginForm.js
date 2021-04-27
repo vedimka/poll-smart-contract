@@ -8,51 +8,40 @@ import Web3 from 'web3'
 
 import {DispatchContext} from '../storage/Context'
 import useClasses from './classes'
-import contractFunc from '../../connector'
+import getPolls from '../getPollsLists'
 
 const Login = () => {
     const classes = useClasses()
     const reducer = useContext(DispatchContext)
 
     const login =  async () => {
-        await window.web3.currentProvider.enable()
-        const newWeb = new Web3(Web3.givenProvider)
-        let created = [], 
-            invited = []
+        let newWeb = null
+        try {
+            await window.web3.currentProvider.enable()
+            newWeb = new Web3(Web3.givenProvider)
+        } catch {
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: 'You have to install MetaMask',
+                    type: 'warning'
+                }
+            })
+            return
+        }
+        let created, invited
         reducer( {
             type: 'SET_LOADER',
             payload: true
         })
         try {
-            const polls = await contractFunc(newWeb.eth, {type: 'getUserPolls'})
-            for(let item of polls) {
-                let poll = {
-                    id: +item.voteID,
-                    title: item.info[0],
-                    description: item.info[1],
-                    status: +item.status,
-                    voted: item.voted
-                }
-                if(poll.status === 1){
-                    let results = await contractFunc(newWeb.eth, {type:'getPollResults', id: poll.id})
-                    const agree = +results[0],
-                            disagree = +results[1],
-                            nd = +results[2],
-                            sum = agree + disagree + nd
-                    poll.result = {}
-                    poll.result.agree = [agree, Math.round(agree / sum * 100) || 0]
-                    poll.result.disagree = [disagree, Math.round(disagree / sum * 100)|| 0]
-                    poll.result.nd = [nd, Math.round(nd / sum * 100)|| 0]
-                }
-                if(item.owner){
-                    created.push(poll)
-                } else {
-                    invited.push(poll)
-                }
-            }
+            const res = await getPolls(newWeb.eth)
+            created = res.created
+            invited = res.invited
+
         } catch {
-            invited = []
-            created = []
+            invited = created = []
         } finally {
             reducer({
                 type: 'SET_OWNERPOLL',
