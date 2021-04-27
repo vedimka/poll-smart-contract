@@ -31,20 +31,21 @@ const InviteForm = ({id, open, close}) => {
             } catch (e) {
                 const error = e.message ? e.message : 'Voter address already exist'
                 snack = [error, 'error']
+            } finally {
+                close()
+                reducer({
+                    type: 'SET_SNACKBAR',
+                    payload: {
+                        isOpen: true,
+                        text: snack[0],
+                        type: snack[1]
+                    }
+                })
+                reducer( {
+                    type: 'SET_LOADER',
+                    payload: false
+                })
             }
-            close()
-            reducer({
-                type: 'SET_SNACKBAR',
-                payload: {
-                    isOpen: true,
-                    text: snack[0],
-                    type: snack[1]
-                }
-            })
-            reducer( {
-                type: 'SET_LOADER',
-                payload: false
-            })
         } else {
             setError('Incorrect etherium address')
             return

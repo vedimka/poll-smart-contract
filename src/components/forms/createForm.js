@@ -42,20 +42,21 @@ const CreateForm = ({open, close}) => {
         } catch (e) {
             const error = e.message ? e.message : 'Invalid transaction'
             snack = [error, 'error']
+        } finally {
+            close()
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: snack[0],
+                    type: snack[1]
+                }
+            })
+            reducer( {
+                type: 'SET_LOADER',
+                payload: false
+            })
         }
-        close()
-        reducer({
-            type: 'SET_SNACKBAR',
-            payload: {
-                isOpen: true,
-                text: snack[0],
-                type: snack[1]
-            }
-        })
-        reducer( {
-            type: 'SET_LOADER',
-            payload: false
-        })
     } 
 
     return (

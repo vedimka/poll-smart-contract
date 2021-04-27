@@ -53,31 +53,32 @@ const Login = () => {
         } catch {
             invited = []
             created = []
+        } finally {
+            reducer({
+                type: 'SET_OWNERPOLL',
+                payload: created
+            })
+            reducer({
+                type: 'SET_PARTPOLL',
+                payload: invited
+            })
+            reducer({
+                type: 'SET_WEB',
+                payload: newWeb.eth
+            })
+            reducer({
+                type: 'SET_SNACKBAR',
+                payload: {
+                    isOpen: true,
+                    text: 'Login success',
+                    type: 'success'
+                }
+            })
+            reducer( {
+                type: 'SET_LOADER',
+                payload: false
+            })
         }
-        reducer({
-            type: 'SET_OWNERPOLL',
-            payload: created
-        })
-        reducer({
-            type: 'SET_PARTPOLL',
-            payload: invited
-        })
-        reducer({
-            type: 'SET_WEB',
-            payload: newWeb.eth
-        })
-        reducer({
-            type: 'SET_SNACKBAR',
-            payload: {
-                isOpen: true,
-                text: 'Login success',
-                type: 'success'
-            }
-        })
-        reducer( {
-            type: 'SET_LOADER',
-            payload: false
-        })
     }
 
     return (
