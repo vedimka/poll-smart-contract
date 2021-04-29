@@ -9,6 +9,7 @@ import Header from '../header/header'
 import Test from '../web3test'//component used for test contract functions
 import PollsList from '../pollsList/pollsList'
 import Login from '../loginForm/loginForm'
+import Menu from '../menu/menu'
 import useClasses from './classes'
 import {StateContext, DispatchContext} from '../storage/Context'
 
@@ -32,10 +33,13 @@ const App = () => {
         <>
             <Switch>
                 <Route exact path="/">
-                    <Header page={page} setPage={setPage} /> 
+                    <Header /> 
                     <div className={classes.body}>
                         {state.web ? 
-                            <PollsList typeOfList={page}/> :
+                            <>
+                                <Menu page={page} setPage={setPage}/>
+                                <PollsList typeOfList={page}/> 
+                            </>:
                             <Login/>}
                     </div>
                 </Route>
