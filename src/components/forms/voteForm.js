@@ -29,7 +29,6 @@ const VoteForm = ({id, list, open, close}) => {
         try {
             await contractFunc(state.web, {type: 'toVote', vote: +choise, id})
             let polls  = state[list]
-            console.log(polls)
             const index = polls.findIndex(x => +x.id === +id)
             polls[index].voted = true
             reducer({

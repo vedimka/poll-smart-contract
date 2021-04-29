@@ -2,7 +2,7 @@ import abi from './VoteABI.json'
 require('dotenv').config()
 
 const contractFunc = async (eth, payload) => {
-    const contract = new eth.Contract(abi, process.env.REACT_APP_ADDRESS) //"")
+    const contract = new eth.Contract(abi, process.env.REACT_APP_ADDRESS)
     let address = await eth.getAccounts()
     await window.web3.currentProvider.enable();
     let res = null
@@ -38,6 +38,7 @@ const contractFunc = async (eth, payload) => {
             default:
                 res = ""
                 break
+            
         }
     } catch (e) {
         const error = e.message

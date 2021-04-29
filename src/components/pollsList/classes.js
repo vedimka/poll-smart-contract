@@ -27,6 +27,7 @@ const useClasses = makeStyles(theme => ({
             },
             '& .btn-group': {
                 textAlign: 'right',
+                
                 marginBottom: -10,
                 marginTop: 15,
             },
@@ -49,12 +50,18 @@ const useClasses = makeStyles(theme => ({
             }
         }
     },
+    disabledButton: {
+        color: '#00000026',
+        '&:hover': {
+            backgroundColor: "#fff"
+        },
+    },
     createButton: {
         position: 'fixed',
         padding: '10px 15px',
-        right: 40,
-        bottom: 40,
-        backgroundColor: '#ff2975bb',//'#dc004eaa',
+        right: '3%',
+        bottom: '3%',
+        backgroundColor: '#ff2975bb',
         color: '#fff',
         borderRadius: 20,
         minHeight: 45,

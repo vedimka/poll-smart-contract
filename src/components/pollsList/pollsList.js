@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
+import Tooltip from '@material-ui/core/Tooltip'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
 
@@ -42,15 +43,6 @@ const PollsList = ({typeOfList}) => {
         if(!voted){
             setVote(true)
             setId(+id)
-        } else {
-            reducer({
-                type: 'SET_SNACKBAR',
-                payload: {
-                    isOpen: true,
-                    text: 'You have already voted to this poll',
-                    type: 'warning'
-                }
-            })
         }
     }
 
@@ -63,7 +55,7 @@ const PollsList = ({typeOfList}) => {
                         className='paper header'>
                             { typeOfList === 'ownerPoll' ? "List of polls created by you" : 'List of polls in which you are a voter'}
                             <div className="description">
-                                <Typography>Your etherium address: {address}</Typography>
+                                <Typography>Your ethereum address: {address}</Typography>
                                 <Typography>{ typeOfList === 'ownerPoll' ? "The number of polls you created" : 'The number of polls in which you are a voter'}: {polls.length}</Typography>
                             </div>
                     </Paper>
@@ -81,11 +73,14 @@ const PollsList = ({typeOfList}) => {
                                 </div>
                                 {item.status === 0 ?
                                 <div className='btn-group'>
-                                    <Button 
-                                        color='primary'
-                                        onClick={() => toVote(item.voted, +item.id)}>
-                                        Vote
-                                    </Button>
+                                     <Tooltip disableFocusListener title={item.voted ? "You have already voted" : ""}>
+                                        <Button 
+                                            className={item.voted ? classes.disabledButton : classes.none}
+                                            color='primary'
+                                            onClick={() => toVote(item.voted, +item.id)}>
+                                            Vote
+                                        </Button>
+                                    </Tooltip>
                                     {typeOfList === 'ownerPoll' ?
                                         <>
                                             <Button 

@@ -47,7 +47,7 @@ const InviteForm = ({id, open, close}) => {
                 })
             }
         } else {
-            setError('Incorrect etherium address')
+            setError('Incorrect ethereum address')
             return
         }
     }
@@ -61,13 +61,13 @@ const InviteForm = ({id, open, close}) => {
             <DialogTitle id="form-dialog-title">Invite friend</DialogTitle>
             <DialogContent >
                 <DialogContentText>
-                    Paste your friend's etherium address to invite him to this poll
+                    Paste your friend's ethereum address to invite him to this poll
                 </DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
                     id="address"
-                    label="Etherium Address"
+                    label="Ethereum Address"
                     type="text"
                     onChange={e => {setAddress(e.target.value); setError('clear')}}
                     error={error !== 'clear'}

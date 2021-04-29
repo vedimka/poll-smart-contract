@@ -78,7 +78,7 @@ const Login = () => {
                         elevation={0}
                         className='paper'>
                         <Typography className="title">First you need to log in</Typography>
-                        <Typography className="description">Please connect to metamask so that we can get your etherium address</Typography>
+                        <Typography className="description">Please connect to metamask so that we can get your ethereum address</Typography>
                         <div className='btn'>
                             <Button onClick={login}>
                                 Connect
