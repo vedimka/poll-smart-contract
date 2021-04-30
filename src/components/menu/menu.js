@@ -57,7 +57,7 @@ const Menu = ({page, setPage}) => {
     return (
         <div className={classes.root}>   
             <Button 
-                className={classes.menuItem}
+                className={page === "ownerPoll" ? 'menuItem active' : 'menuItem'}
                 onClick={ () => changePage('ownerPoll')}>
                 <div className='icon'>
                     <svg 
@@ -71,7 +71,7 @@ const Menu = ({page, setPage}) => {
             </Button>
             <Button 
                 key="refresh"
-                className={classes.menuItem}
+                className='menuItem'
                 onClick={refresh}
                 margin='normal'>
                 <div className='icon'>
@@ -98,7 +98,7 @@ const Menu = ({page, setPage}) => {
                 </div>
             </Button>
             <Button 
-                className={classes.menuItem}
+                className={page === "partPoll" ? 'menuItem active' : 'menuItem'}
                 onClick={ () => changePage('partPoll')}>
                 <div className='icon'>
                     <svg id="_x31_" enableBackground="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +124,7 @@ const Menu = ({page, setPage}) => {
                         </g>
                     </svg>
                 </div>
-                <Typography>Polls where I as a voter</Typography>
+                <Typography>Guest polls</Typography>
             </Button>
         </div>
     )

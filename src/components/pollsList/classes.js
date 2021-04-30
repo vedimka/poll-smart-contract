@@ -19,7 +19,6 @@ const useClasses = makeStyles(theme => ({
                 fontSize: 25,
                 justifyContent: 'space-between',
                 marginBottom: 6,
-                // Webkit-box-pack: justify;
             },
             '& .description': {
                 fontSize: 16,
