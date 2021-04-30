@@ -1,6 +1,9 @@
 
 # SmartContracts
 
+Clone repository 
+```git clone https://github.com/482solutions/SmartContract-Poll.git```
+
 ## Deploy smartContracts:
 
 ### Use Remix IDE
@@ -34,10 +37,11 @@ After deployment, a smart contract will appear in the section, by clicking on it
 
 In the project directory, you can run:
 
-  
+### `npm i`
+
+and then  
 
 ### `npm start`
-
   
 
 Runs the app in the development mode.\
