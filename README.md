@@ -4,6 +4,8 @@
 Clone repository 
 ```git clone https://github.com/482solutions/SmartContract-Poll.git```
 
+Then you have to download npm and nodejs by link [Download npm](https://nodejs.org/en/download/) 
+
 ## Deploy smartContracts:
 
 ### Use Remix IDE
