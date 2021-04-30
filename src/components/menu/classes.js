@@ -2,9 +2,11 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useClasses = makeStyles((theme) => ({
     root: {
-		width: '18%',
+		// width: '18%',
         // maxWidth: '18%',
-        margin: '15px auto',
+		display: 'flex',
+        margin: '15px 0',
+		justifyContent: 'center',
 
 		'& .menuItem': {
 			minWidth: 25,
