@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+/ SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Counters.sol';
@@ -15,7 +15,6 @@ contract PollFactory {
         string [2] info;
         Status status;
         Vote vote;
-        bool voted;
         address[] voters;
     }
     struct Info {
@@ -40,7 +39,7 @@ contract PollFactory {
             owner: pollsByID[_pollID].owner == _user,
             info: pollsByID[_pollID].info,
             status : pollsByID[_pollID].status,
-            voted: pollsByID[_pollID].voted
+            voted: false
             });
         }
     function createPoll(string memory _title, string memory _description) public {
@@ -51,7 +50,6 @@ contract PollFactory {
             info : [_title, _description],
             status : Status.IN_PROGRESS,
             vote : new Vote(msg.sender, _title, _description),
-            voted: false,
             voters: usersByPollID[pollID.current()]
         });
         addVoterToPoll( msg.sender, pollID.current());
@@ -78,25 +76,23 @@ contract PollFactory {
     function toVote (Vote.choices _choice , uint _pollID) public {
         require (pollsByID[_pollID].voteID == _pollID, "Voting is not created yet");
         require (pollsByID[_pollID].status == Status.IN_PROGRESS, "Voting has already ended");
-        require (pollsByID[_pollID].voted == false, "You have already voted");
         pollsByID[_pollID].vote.vote(msg.sender, _choice );
-        pollsByID[_pollID].voted = true;
         userPolls [ msg.sender] [IDToIndex [msg.sender] [_pollID] ].voted = true;
         emit Voted(msg.sender, _pollID);
     }
     function getPollResults( uint _pollID) public view returns (uint[3] memory pollResult) {
         require (pollsByID[_pollID].voteID == _pollID, "Voting is not created yet");
-        require (pollsByID[_pollID].status == Status.DONE, "Voting is not over yet"); 
+        require (pollsByID[_pollID].status == Status.DONE, "Voting is not over yet");
         pollResult = pollsByID[_pollID].vote.getResults();
     }
-    function changeStatus( address _user, uint _pollID) private  { 
+    function changeStatus( address _user, uint _pollID) private  {
         userPolls [ _user ] [IDToIndex [_user] [_pollID] ].status = Status.DONE;
     }
     function endPoll( uint _pollID) public {
         require (pollsByID[_pollID].voteID == _pollID, "Voting is not created yet");
         require (pollsByID[_pollID].owner == msg.sender, "Only the owner can use this method");
         pollsByID[_pollID].vote.endVote(msg.sender);
-        pollsByID[_pollID].status = Status.DONE;        
+        pollsByID[_pollID].status = Status.DONE;
         for(uint i = 0; i < pollsByID[_pollID].voters.length; i++) {
           changeStatus(pollsByID[_pollID].voters[i], _pollID);
         }
