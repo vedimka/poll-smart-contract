@@ -12,7 +12,7 @@ Then you have to download npm and nodejs by link [Download npm](https://nodejs.o
 
 For deploy smart-contracts you need to go to the [Remix IDE](http://remix.ethereum.org/) website and create two empty files named "Vote.sol" and "PollFactory.sol".
 
-Inside these files, you need to copy and paste the code from the files of the same name [Vote.sol](https://github.com/482solutions/SmartContract-Poll/blob/master/contracts/Vote.sol) and [PollFactory.sol](https://github.com/5482solutions/SmartContract-Poll/blob/master/contracts/PollFactory.sol).
+Inside these files, you need to copy and paste the code from the files of the same name [Vote.sol](https://github.com/482solutions/SmartContract-Poll/blob/master/contracts/Vote.sol) and [PollFactory.sol](https://github.com/482solutions/SmartContract-Poll/blob/master/contracts/PollFactory.sol).
 
 ### Use MetaMask
 
